@@ -1,6 +1,6 @@
 import { CREATE_POST } from "@/graphql/mutations/posts";
 import { GET_POSTS } from "@/graphql/queries/posts";
-import { Post } from "@/types/posts";
+import { ICreatePostMutation, IGetPostsQuery } from "@/graphql/types";
 import { useMutation } from "@apollo/client";
 import { Box, Button, TextField, Typography } from "@mui/material";
 import React, { useState } from "react";
@@ -9,12 +9,13 @@ export default function Form() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
 
-  const [createPost, { loading, error }] = useMutation(CREATE_POST, {
-    update(cache, { data: { createPost } }) {
-      const existingPosts = cache.readQuery<{ posts: Post[] }>({ query: GET_POSTS })?.posts || [];
+  const [createPost, { loading, error }] = useMutation<ICreatePostMutation>(CREATE_POST, {
+    update(cache, { data }) {
+      const existingPosts = cache.readQuery<IGetPostsQuery>({ query: GET_POSTS })?.posts || [];
+
       cache.writeQuery({
         query: GET_POSTS,
-        data: { posts: [...existingPosts, createPost] },
+        data: { posts: data?.createPost ? [...existingPosts, data.createPost] : existingPosts },
       });
     },
   });

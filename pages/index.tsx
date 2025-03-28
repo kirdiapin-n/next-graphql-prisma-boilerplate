@@ -1,27 +1,15 @@
 import Form from "@/components/posts/Form";
 import { GET_POSTS } from "@/graphql/queries/posts";
-import client from "@/lib/apolloClient";
+import { IGetPostsQuery } from "@/graphql/types";
 import { getClient } from "@/lib/ssrApolloClient";
-import { Post } from "@/types/posts";
-import { ApolloProvider, useQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client";
 import { Button, Card, CardActions, CardContent, Stack, Typography } from "@mui/material";
 import { GetStaticProps } from "next";
 import Link from "next/link";
-import React, { useEffect } from "react";
+import React from "react";
 
-interface HomeProps {
-  posts: Post[];
-}
-
-function Home({ posts: initialPosts }: HomeProps) {
-  useEffect(() => {
-    client.writeQuery({
-      query: GET_POSTS,
-      data: { posts: initialPosts },
-    });
-  }, [initialPosts]);
-
-  const { data } = useQuery<{ posts: Post[] }>(GET_POSTS);
+export default function HomePage({ posts: initialPosts }: IGetPostsQuery) {
+  const { data } = useQuery<IGetPostsQuery>(GET_POSTS);
 
   const posts = data?.posts || initialPosts;
 
@@ -55,18 +43,10 @@ function Home({ posts: initialPosts }: HomeProps) {
   );
 }
 
-export default function HomePage(props: HomeProps) {
-  return (
-    <ApolloProvider client={client}>
-      <Home {...props} />
-    </ApolloProvider>
-  );
-}
-
-export const getStaticProps: GetStaticProps<HomeProps> = async () => {
+export const getStaticProps: GetStaticProps<IGetPostsQuery> = async () => {
   try {
     const client = getClient();
-    const { data } = await client.query<{ posts: Post[] }>({
+    const { data } = await client.query<IGetPostsQuery>({
       query: GET_POSTS,
     });
 

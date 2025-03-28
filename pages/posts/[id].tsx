@@ -1,21 +1,11 @@
 import { GET_ALL_POST_IDS, GET_POST_BY_ID } from "@/graphql/queries/posts";
+import { IGetPostQuery, IGetPostQueryVariables } from "@/graphql/types";
 import { getClient } from "@/lib/ssrApolloClient";
 import { Card, CardContent, Typography } from "@mui/material";
 import { GetStaticPaths, GetStaticProps } from "next";
 import React from "react";
 
-type Post = {
-  id: number;
-  title: string;
-  content: string;
-  createdAt: string;
-};
-
-interface PostProps {
-  post: Post | null;
-}
-
-export default function Post({ post }: PostProps) {
+export default function Post({ post }: IGetPostQuery) {
   if (!post) return null;
 
   return (
@@ -60,26 +50,17 @@ export const getStaticPaths: GetStaticPaths = async () => {
   }
 };
 
-export const getStaticProps: GetStaticProps<PostProps> = async ({ params }) => {
-  try {
-    const id = parseInt(params?.id as string, 10);
-    const client = getClient();
-    const { data } = await client.query<{ post: Post }>({
-      query: GET_POST_BY_ID,
-      variables: { id },
-    });
+export const getStaticProps: GetStaticProps<IGetPostQuery> = async ({ params }) => {
+  const id = parseInt(params?.id as string, 10);
+  const client = getClient();
+  const { data } = await client.query<IGetPostQuery, IGetPostQueryVariables>({
+    query: GET_POST_BY_ID,
+    variables: { id },
+  });
 
-    return {
-      props: {
-        post: data.post || null,
-      },
-    };
-  } catch (error) {
-    console.error("Error fetching post:", error);
-    return {
-      props: {
-        post: null,
-      },
-    };
-  }
+  return {
+    props: {
+      post: data.post,
+    },
+  };
 };
