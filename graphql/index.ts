@@ -14,6 +14,7 @@ export const typeDefs = gql`
   type Query {
     posts: [Post!]!
     post(id: Int!): Post!
+    searchPosts(term: String!): [Post!]!
   }
 
   type Mutation {
@@ -34,6 +35,16 @@ export const resolvers = {
         throw new Error(`Post with ID ${id} not found`);
       }
       return post;
+    },
+    searchPosts: async (_: any, { term }: { term: string }) => {
+      return prisma.post.findMany({
+        where: {
+          OR: [
+            { title: { contains: term, mode: "insensitive" } },
+            { content: { contains: term, mode: "insensitive" } },
+          ],
+        },
+      });
     },
   },
   Mutation: {

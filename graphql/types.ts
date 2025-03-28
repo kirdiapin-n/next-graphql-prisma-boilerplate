@@ -36,10 +36,15 @@ export interface IPost {
 export interface IQuery {
   post: IPost;
   posts: Array<IPost>;
+  searchPosts: Array<IPost>;
 }
 
 export interface IQueryPostArgs {
   id: Scalars["Int"]["input"];
+}
+
+export interface IQuerySearchPostsArgs {
+  term: Scalars["String"]["input"];
 }
 
 export type ICreatePostMutationVariables = Exact<{
@@ -62,6 +67,14 @@ export type IGetPostQueryVariables = Exact<{
 }>;
 
 export type IGetPostQuery = { post: { id: number; title: string; content: string; createdAt: string } };
+
+export type ISearchPostsQueryVariables = Exact<{
+  term: Scalars["String"]["input"];
+}>;
+
+export type ISearchPostsQuery = {
+  searchPosts: Array<{ id: number; title: string; content: string; createdAt: string }>;
+};
 
 export const CreatePostDocument = gql`
   mutation CreatePost($title: String!, $content: String!) {
@@ -239,3 +252,53 @@ export type GetPostQueryHookResult = ReturnType<typeof useGetPostQuery>;
 export type GetPostLazyQueryHookResult = ReturnType<typeof useGetPostLazyQuery>;
 export type GetPostSuspenseQueryHookResult = ReturnType<typeof useGetPostSuspenseQuery>;
 export type GetPostQueryResult = Apollo.QueryResult<IGetPostQuery, IGetPostQueryVariables>;
+export const SearchPostsDocument = gql`
+  query SearchPosts($term: String!) {
+    searchPosts(term: $term) {
+      id
+      title
+      content
+      createdAt
+    }
+  }
+`;
+
+/**
+ * __useSearchPostsQuery__
+ *
+ * To run a query within a React component, call `useSearchPostsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSearchPostsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSearchPostsQuery({
+ *   variables: {
+ *      term: // value for 'term'
+ *   },
+ * });
+ */
+export function useSearchPostsQuery(
+  baseOptions: Apollo.QueryHookOptions<ISearchPostsQuery, ISearchPostsQueryVariables> &
+    ({ variables: ISearchPostsQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<ISearchPostsQuery, ISearchPostsQueryVariables>(SearchPostsDocument, options);
+}
+export function useSearchPostsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<ISearchPostsQuery, ISearchPostsQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<ISearchPostsQuery, ISearchPostsQueryVariables>(SearchPostsDocument, options);
+}
+export function useSearchPostsSuspenseQuery(
+  baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<ISearchPostsQuery, ISearchPostsQueryVariables>
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<ISearchPostsQuery, ISearchPostsQueryVariables>(SearchPostsDocument, options);
+}
+export type SearchPostsQueryHookResult = ReturnType<typeof useSearchPostsQuery>;
+export type SearchPostsLazyQueryHookResult = ReturnType<typeof useSearchPostsLazyQuery>;
+export type SearchPostsSuspenseQueryHookResult = ReturnType<typeof useSearchPostsSuspenseQuery>;
+export type SearchPostsQueryResult = Apollo.QueryResult<ISearchPostsQuery, ISearchPostsQueryVariables>;

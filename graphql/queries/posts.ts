@@ -29,3 +29,14 @@ export const GET_POST_BY_ID = gql`
     }
   }
 `;
+
+export const SEARCH_POSTS = gql`
+  query SearchPosts($term: String!) {
+    searchPosts(term: $term) {
+      id
+      title
+      content
+      createdAt
+    }
+  }
+`;
