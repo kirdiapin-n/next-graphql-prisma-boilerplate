@@ -42,3 +42,5 @@ next-env.d.ts
 
 .idea
 .firebase
+
+firebase-debug.log
