@@ -1,3 +1,1 @@
 ```npx prisma studio```
-
-``````

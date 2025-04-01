@@ -1,10 +1,11 @@
+import { graphqlApiUrl } from "./constants/api";
 import { CodegenConfig } from "@graphql-codegen/cli";
 import * as dotenv from "dotenv";
 
 dotenv.config();
 
 const config: CodegenConfig = {
-  schema: process.env.NEXT_PUBLIC_GRAPHQL_URL,
+  schema: `${process.env.NEXT_PUBLIC_SITE_URL}/${graphqlApiUrl}`,
   documents: ["graphql/**/*.ts"],
   generates: {
     "graphql/types.ts": {

@@ -1,5 +1,5 @@
 {
   "projects": {
-    "default": "the-new-blog"
+    "default": "nextjs-graphql-prisma-bp"
   }
 }
