@@ -3,7 +3,7 @@ import { List } from "@/components/posts/List";
 import { GET_POSTS } from "@/graphql/queries/posts";
 import { IGetPostsQuery } from "@/graphql/types";
 import { getClient } from "@/lib/ssrApolloClient";
-import { GetStaticProps } from "next";
+import { GetServerSideProps } from "next";
 import React from "react";
 
 function Home({ posts }: IGetPostsQuery) {
@@ -22,7 +22,7 @@ export default function HomePage(props: IGetPostsQuery) {
   return <Home {...props} />;
 }
 
-export const getStaticProps: GetStaticProps<IGetPostsQuery> = async () => {
+export const getServerSideProps: GetServerSideProps<IGetPostsQuery> = async () => {
   try {
     const client = getClient();
     const { data } = await client.query<IGetPostsQuery>({
