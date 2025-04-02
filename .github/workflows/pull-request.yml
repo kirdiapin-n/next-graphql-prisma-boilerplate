@@ -1,0 +1,38 @@
+name: Lint and Type Check PR
+
+on:
+  push:
+    branches: [main] # Or your default branch
+  workflow_dispatch: # Allows manual triggering
+
+jobs:
+  lint-and-tsc:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20 # Adjust to your Node version
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run lint
+        run: npm run lint
+
+      - name: Run TypeScript check
+        run: npm run tsc
+
+      - name: Commit and create/update PR if needed
+        uses: peter-evans/create-pull-request@v6
+        with:
+          commit-message: "chore: apply lint and type-check fixes"
+          title: "chore: auto lint/tsc fixes"
+          body: |
+            This PR includes automatic fixes from running `npm run lint` and `npm run tsc`.
+          branch: auto/lint-tsc-fixes
+          delete-branch: true
