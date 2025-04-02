@@ -12,6 +12,10 @@ export const typeDefs = gql`
     createdAt: String!
   }
 
+  type Result {
+    success: Boolean!
+  }
+
   type Query {
     posts: [Post!]!
     post(id: Int!): Post!
@@ -20,6 +24,7 @@ export const typeDefs = gql`
 
   type Mutation {
     createPost(title: String!, content: String!): Post!
+    deletePost(id: Int!): Result!
   }
 `;
 
@@ -53,6 +58,16 @@ export const resolvers = {
       return prisma.post.create({
         data: { title, content },
       });
+    },
+    deletePost: async (_: any, { id }: { id: number }) => {
+      const post = await prisma.post.findUnique({ where: { id } });
+      if (!post) throw new Error(`Post with ID ${id} not found`);
+
+      const data = await prisma.post.delete({ where: { id } });
+
+      console.log(data);
+
+      return { success: Boolean(data) };
     },
   },
 };
