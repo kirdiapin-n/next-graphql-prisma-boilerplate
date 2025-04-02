@@ -1,11 +1,30 @@
-import { GET_ALL_POST_IDS, GET_POST_BY_ID } from "@/graphql/queries/posts";
-import { IGetPostQuery, IGetPostQueryVariables } from "@/graphql/types";
+import { DELETE_POST } from "@/graphql/mutations/posts";
+import { GET_POST_BY_ID } from "@/graphql/queries/posts";
+import {
+  IDeletePostMutation,
+  IDeletePostMutationVariables,
+  IGetPostQuery,
+  IGetPostQueryVariables,
+} from "@/graphql/types";
 import { getClient } from "@/lib/ssrApolloClient";
-import { Card, CardContent, Typography } from "@mui/material";
+import { useMutation } from "@apollo/client";
+import { Button, Card, CardActions, CardContent, Typography } from "@mui/material";
 import { GetServerSideProps } from "next";
+import { useRouter } from "next/router";
 import React from "react";
 
 export default function Post({ post }: IGetPostQuery) {
+  const { push } = useRouter();
+  const [mutate] = useMutation<IDeletePostMutation, IDeletePostMutationVariables>(DELETE_POST);
+
+  const handleDelete = async () => {
+    const { data } = await mutate({ variables: { id: post.id } });
+
+    if (data?.deletePost.success) {
+      await push("/");
+    }
+  };
+
   if (!post) return null;
 
   return (
@@ -21,6 +40,12 @@ export default function Post({ post }: IGetPostQuery) {
           </Typography>
           <Typography variant="body2">{post.content}</Typography>
         </CardContent>
+
+        <CardActions>
+          <Button color="error" onClick={handleDelete}>
+            Delete
+          </Button>
+        </CardActions>
       </Card>
     </div>
   );
