@@ -23,13 +23,3 @@ jobs:
 
       - name: Run TypeScript check
         run: npm run tsc
-
-      - name: Commit and create/update PR if needed
-        uses: peter-evans/create-pull-request@v6
-        with:
-          commit-message: "chore: apply lint and type-check fixes"
-          title: "chore: auto lint/tsc fixes"
-          body: |
-            This PR includes automatic fixes from running `npm run lint` and `npm run tsc`.
-          branch: auto/lint-tsc-fixes
-          delete-branch: true
