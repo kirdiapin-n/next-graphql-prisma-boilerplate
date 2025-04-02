@@ -38,15 +38,18 @@ export const List = ({ posts: initialPosts }: IGetPostsQuery) => {
               <Typography variant="h5" component="div">
                 {post.title}
               </Typography>
+
               <Typography sx={{ color: "text.secondary", mb: 1.5 }}>
                 {new Date(Number(post.createdAt)).toLocaleDateString()}
               </Typography>
+
               <Typography variant="body2">{post.content}</Typography>
             </CardContent>
+
             <CardActions>
-              <Link href={{ pathname: "/posts/[id]", query: { id } }}>
-                <Button size="small">Learn More</Button>
-              </Link>
+              <Button LinkComponent={Link} href={{ pathname: "/posts/[id]", query: { id } } as any} size="small">
+                Learn More
+              </Button>
             </CardActions>
           </Card>
         ))}

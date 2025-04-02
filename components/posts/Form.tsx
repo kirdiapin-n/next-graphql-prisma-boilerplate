@@ -2,10 +2,11 @@ import { CREATE_POST } from "@/graphql/mutations/posts";
 import { GET_POSTS } from "@/graphql/queries/posts";
 import { ICreatePostMutation, IGetPostsQuery } from "@/graphql/types";
 import { useMutation } from "@apollo/client";
-import { Box, Button, TextField, Typography } from "@mui/material";
+import { Alert, Box, Button, Snackbar, TextField, Typography } from "@mui/material";
 import React, { useState } from "react";
 
 export default function Form() {
+  const [isOpen, setIsOpen] = useState(false);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
 
@@ -28,6 +29,8 @@ export default function Form() {
       await createPost({ variables: { title, content } });
       setTitle("");
       setContent("");
+
+      setIsOpen(true);
     } catch (err) {
       console.error("Error creating post:", err);
     }
@@ -60,6 +63,17 @@ export default function Form() {
         {loading ? "Submitting..." : "Create Post"}
       </Button>
       {error && <Typography color="error">{error.message}</Typography>}
+
+      <Snackbar
+        open={isOpen}
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        autoHideDuration={3000}
+        onClose={() => setIsOpen(false)}
+      >
+        <Alert severity="success" variant="filled" sx={{ width: "100%" }}>
+          Post was created
+        </Alert>
+      </Snackbar>
     </Box>
   );
 }

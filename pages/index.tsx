@@ -1,17 +1,23 @@
-import Form from "@/components/posts/Form";
 import { List } from "@/components/posts/List";
 import { GET_POSTS } from "@/graphql/queries/posts";
 import { IGetPostsQuery } from "@/graphql/types";
 import { getClient } from "@/lib/ssrApolloClient";
+import { IconButton, Stack } from "@mui/material";
 import { GetServerSideProps } from "next";
+import Link from "next/link";
 import React from "react";
+import AddIcon from "@mui/icons-material/Add";
 
 function Home({ posts }: IGetPostsQuery) {
   return (
     <div>
-      <h1>Blog Posts</h1>
+      <Stack direction="row" justifyContent="space-between" alignItems="center">
+        <h1>Blog Posts</h1>
 
-      <Form />
+        <IconButton href="/posts/add" LinkComponent={Link} title="Add Post">
+          <AddIcon />
+        </IconButton>
+      </Stack>
 
       <List posts={posts} />
     </div>
