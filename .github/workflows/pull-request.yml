@@ -1,12 +1,9 @@
 name: Lint and Type Check PR
 
-on:
-  push:
-    branches: [main] # Or your default branch
-  workflow_dispatch: # Allows manual triggering
+on: pull_request
 
 jobs:
-  lint-and-tsc:
+  tsc:
     runs-on: ubuntu-latest
 
     steps:
