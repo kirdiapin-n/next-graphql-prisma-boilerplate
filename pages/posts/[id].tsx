@@ -20,9 +20,7 @@ export default function Post({ post }: IGetPostQuery) {
   const handleDelete = async () => {
     const { data } = await mutate({ variables: { id: post.id } });
 
-    if (data?.deletePost.success) {
-      await push("/");
-    }
+    if (data?.deletePost.success) await push("/");
   };
 
   if (!post) return null;
@@ -52,16 +50,20 @@ export default function Post({ post }: IGetPostQuery) {
 }
 
 export const getServerSideProps: GetServerSideProps<IGetPostQuery> = async ({ params }) => {
-  const id = parseInt(params?.id as string, 10);
-  const client = getClient();
-  const { data } = await client.query<IGetPostQuery, IGetPostQueryVariables>({
-    query: GET_POST_BY_ID,
-    variables: { id },
-  });
+  try {
+    const id = parseInt(params?.id as string, 10);
+    const client = getClient();
+    const { data } = await client.query<IGetPostQuery, IGetPostQueryVariables>({
+      query: GET_POST_BY_ID,
+      variables: { id },
+    });
 
-  return {
-    props: {
-      post: data.post,
-    },
-  };
+    return {
+      props: {
+        post: data.post,
+      },
+    };
+  } catch (e) {
+    return { notFound: true };
+  }
 };
