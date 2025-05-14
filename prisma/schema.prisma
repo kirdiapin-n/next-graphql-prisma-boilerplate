@@ -13,3 +13,10 @@ model Post {
   content   String
   createdAt DateTime @default(now())
 }
+
+model User {
+  id    Int    @id @default(autoincrement())
+  auth0Id   String @unique
+  name  String
+  email String @unique
+}
