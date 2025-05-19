@@ -23,7 +23,6 @@ export default function Header() {
             Home
           </Button>
         </Box>
-        {JSON.stringify(user, null, 2)}
 
         {/* Right - User Dropdown */}
         <Box>
@@ -35,12 +34,12 @@ export default function Header() {
               <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleClose}>
                 <MenuItem onClick={handleClose}>
                   <Link href="/profile" passHref legacyBehavior>
-                    <a style={{ textDecoration: "none", color: "inherit" }}>Профиль</a>
+                    <a style={{ textDecoration: "none", color: "inherit" }}>Profile</a>
                   </Link>
                 </MenuItem>
                 <MenuItem onClick={handleClose}>
                   <Link href="/auth/logout" passHref legacyBehavior>
-                    <a style={{ textDecoration: "none", color: "inherit" }}>Выйти</a>
+                    <a style={{ textDecoration: "none", color: "inherit" }}>Logout</a>
                   </Link>
                 </MenuItem>
               </Menu>
@@ -48,10 +47,10 @@ export default function Header() {
           ) : (
             <>
               <Link href="/auth/login" passHref legacyBehavior>
-                <Button color="inherit">Войти</Button>
+                <Button color="inherit">Login</Button>
               </Link>
-              <Link href="/register" passHref legacyBehavior>
-                <Button color="inherit">Регистрация</Button>
+              <Link href="/signup" passHref legacyBehavior>
+                <Button color="inherit">Sign Up</Button>
               </Link>
             </>
           )}

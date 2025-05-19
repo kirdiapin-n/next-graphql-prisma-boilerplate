@@ -1,6 +1,6 @@
 import { IGetUserQuery } from "@/graphql/types";
+import { withPageAuthRequired } from "@/lib/withPageAuthRequired";
 import { withUser } from "@/lib/withUser";
-import { GetServerSideProps } from "next";
 import React from "react";
 
 export default function Profile({ user }: IGetUserQuery) {
@@ -17,4 +17,4 @@ export default function Profile({ user }: IGetUserQuery) {
   );
 }
 
-export const getServerSideProps = withUser();
+export const getServerSideProps = withPageAuthRequired(withUser());

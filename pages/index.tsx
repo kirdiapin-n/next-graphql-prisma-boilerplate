@@ -11,7 +11,6 @@ import React from "react";
 function Home({ posts, user }: WithUser<IGetPostsQuery>) {
   return (
     <div>
-      {JSON.stringify(user, null, 2)}
       <Stack direction="row" justifyContent="space-between" alignItems="center">
         <h1>Blog Posts</h1>
 
