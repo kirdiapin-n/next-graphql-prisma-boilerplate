@@ -19,12 +19,19 @@ export interface Scalars {
 
 export interface IMutation {
   createPost: IPost;
+  createUser: IUser;
   deletePost: IResult;
 }
 
 export interface IMutationCreatePostArgs {
   content: Scalars["String"]["input"];
   title: Scalars["String"]["input"];
+}
+
+export interface IMutationCreateUserArgs {
+  email: Scalars["String"]["input"];
+  name: Scalars["String"]["input"];
+  password: Scalars["String"]["input"];
 }
 
 export interface IMutationDeletePostArgs {
@@ -42,6 +49,8 @@ export interface IQuery {
   post: IPost;
   posts: Array<IPost>;
   searchPosts: Array<IPost>;
+  user?: Maybe<IUser>;
+  users: Array<IUser>;
 }
 
 export interface IQueryPostArgs {
@@ -52,8 +61,19 @@ export interface IQuerySearchPostsArgs {
   term: Scalars["String"]["input"];
 }
 
+export interface IQueryUserArgs {
+  auth0Id: Scalars["String"]["input"];
+}
+
 export interface IResult {
   success: Scalars["Boolean"]["output"];
+}
+
+export interface IUser {
+  auth0Id: Scalars["String"]["output"];
+  email: Scalars["String"]["output"];
+  id: Scalars["Int"]["output"];
+  name: Scalars["String"]["output"];
 }
 
 export type ICreatePostMutationVariables = Exact<{
@@ -68,6 +88,14 @@ export type IDeletePostMutationVariables = Exact<{
 }>;
 
 export type IDeletePostMutation = { deletePost: { success: boolean } };
+
+export type ICreateUserMutationVariables = Exact<{
+  email: Scalars["String"]["input"];
+  name: Scalars["String"]["input"];
+  password: Scalars["String"]["input"];
+}>;
+
+export type ICreateUserMutation = { createUser: { id: number; auth0Id: string; name: string; email: string } };
 
 export type IGetPostsQueryVariables = Exact<{ [key: string]: never }>;
 
@@ -90,6 +118,12 @@ export type ISearchPostsQueryVariables = Exact<{
 export type ISearchPostsQuery = {
   searchPosts: Array<{ id: number; title: string; content: string; createdAt: string }>;
 };
+
+export type IGetUserQueryVariables = Exact<{
+  auth0Id: Scalars["String"]["input"];
+}>;
+
+export type IGetUserQuery = { user?: { name: string; email: string; id: number } | null };
 
 export const CreatePostDocument = gql`
   mutation CreatePost($title: String!, $content: String!) {
@@ -165,6 +199,46 @@ export function useDeletePostMutation(
 export type DeletePostMutationHookResult = ReturnType<typeof useDeletePostMutation>;
 export type DeletePostMutationResult = Apollo.MutationResult<IDeletePostMutation>;
 export type DeletePostMutationOptions = Apollo.BaseMutationOptions<IDeletePostMutation, IDeletePostMutationVariables>;
+export const CreateUserDocument = gql`
+  mutation createUser($email: String!, $name: String!, $password: String!) {
+    createUser(name: $name, password: $password, email: $email) {
+      id
+      auth0Id
+      name
+      email
+    }
+  }
+`;
+export type ICreateUserMutationFn = Apollo.MutationFunction<ICreateUserMutation, ICreateUserMutationVariables>;
+
+/**
+ * __useCreateUserMutation__
+ *
+ * To run a mutation, you first call `useCreateUserMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateUserMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createUserMutation, { data, loading, error }] = useCreateUserMutation({
+ *   variables: {
+ *      email: // value for 'email'
+ *      name: // value for 'name'
+ *      password: // value for 'password'
+ *   },
+ * });
+ */
+export function useCreateUserMutation(
+  baseOptions?: Apollo.MutationHookOptions<ICreateUserMutation, ICreateUserMutationVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<ICreateUserMutation, ICreateUserMutationVariables>(CreateUserDocument, options);
+}
+export type CreateUserMutationHookResult = ReturnType<typeof useCreateUserMutation>;
+export type CreateUserMutationResult = Apollo.MutationResult<ICreateUserMutation>;
+export type CreateUserMutationOptions = Apollo.BaseMutationOptions<ICreateUserMutation, ICreateUserMutationVariables>;
 export const GetPostsDocument = gql`
   query GetPosts {
     posts {
@@ -352,3 +426,50 @@ export type SearchPostsQueryHookResult = ReturnType<typeof useSearchPostsQuery>;
 export type SearchPostsLazyQueryHookResult = ReturnType<typeof useSearchPostsLazyQuery>;
 export type SearchPostsSuspenseQueryHookResult = ReturnType<typeof useSearchPostsSuspenseQuery>;
 export type SearchPostsQueryResult = Apollo.QueryResult<ISearchPostsQuery, ISearchPostsQueryVariables>;
+export const GetUserDocument = gql`
+  query getUser($auth0Id: String!) {
+    user(auth0Id: $auth0Id) {
+      name
+      email
+      id
+    }
+  }
+`;
+
+/**
+ * __useGetUserQuery__
+ *
+ * To run a query within a React component, call `useGetUserQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetUserQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetUserQuery({
+ *   variables: {
+ *      auth0Id: // value for 'auth0Id'
+ *   },
+ * });
+ */
+export function useGetUserQuery(
+  baseOptions: Apollo.QueryHookOptions<IGetUserQuery, IGetUserQueryVariables> &
+    ({ variables: IGetUserQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<IGetUserQuery, IGetUserQueryVariables>(GetUserDocument, options);
+}
+export function useGetUserLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<IGetUserQuery, IGetUserQueryVariables>) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<IGetUserQuery, IGetUserQueryVariables>(GetUserDocument, options);
+}
+export function useGetUserSuspenseQuery(
+  baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<IGetUserQuery, IGetUserQueryVariables>
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<IGetUserQuery, IGetUserQueryVariables>(GetUserDocument, options);
+}
+export type GetUserQueryHookResult = ReturnType<typeof useGetUserQuery>;
+export type GetUserLazyQueryHookResult = ReturnType<typeof useGetUserLazyQuery>;
+export type GetUserSuspenseQueryHookResult = ReturnType<typeof useGetUserSuspenseQuery>;
+export type GetUserQueryResult = Apollo.QueryResult<IGetUserQuery, IGetUserQueryVariables>;

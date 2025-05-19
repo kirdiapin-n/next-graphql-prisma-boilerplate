@@ -2,21 +2,25 @@ import { List } from "@/components/posts/List";
 import { GET_POSTS } from "@/graphql/queries/posts";
 import { IGetPostsQuery } from "@/graphql/types";
 import { getClient } from "@/lib/ssrApolloClient";
+import { WithUser, withUser } from "@/lib/withUser";
+import AddIcon from "@mui/icons-material/Add";
 import { IconButton, Stack } from "@mui/material";
-import { GetServerSideProps } from "next";
 import Link from "next/link";
 import React from "react";
-import AddIcon from "@mui/icons-material/Add";
 
-function Home({ posts }: IGetPostsQuery) {
+function Home({ posts, user }: WithUser<IGetPostsQuery>) {
   return (
     <div>
       <Stack direction="row" justifyContent="space-between" alignItems="center">
         <h1>Blog Posts</h1>
 
-        <IconButton href="/posts/add" LinkComponent={Link} title="Add Post">
-          <AddIcon />
-        </IconButton>
+        {user ? (
+          <IconButton href="/posts/add" LinkComponent={Link} title="Add Post">
+            <AddIcon />
+          </IconButton>
+        ) : (
+          <div />
+        )}
       </Stack>
 
       <List posts={posts} />
@@ -24,11 +28,11 @@ function Home({ posts }: IGetPostsQuery) {
   );
 }
 
-export default function HomePage(props: IGetPostsQuery) {
+export default function HomePage(props: WithUser<IGetPostsQuery>) {
   return <Home {...props} />;
 }
 
-export const getServerSideProps: GetServerSideProps<IGetPostsQuery> = async () => {
+export const getServerSideProps = withUser(async () => {
   try {
     const client = getClient();
     const { data } = await client.query<IGetPostsQuery>({
@@ -48,4 +52,4 @@ export const getServerSideProps: GetServerSideProps<IGetPostsQuery> = async () =
       },
     };
   }
-};
+});
