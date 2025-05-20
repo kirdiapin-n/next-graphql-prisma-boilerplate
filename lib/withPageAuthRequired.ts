@@ -5,9 +5,6 @@ export function withPageAuthRequired<P extends Record<string, any> = {}>(
   fn?: (context: GetServerSidePropsContext) => Promise<{ props: P }>
 ) {
   return async (context: GetServerSidePropsContext) => {
-    console.log("Headers:", context.req.headers);
-    console.log("Cookies:", context.req.headers.cookie);
-
     const result = fn ? await fn(context) : { props: {} as P };
     const redirect = {
       permanent: false,

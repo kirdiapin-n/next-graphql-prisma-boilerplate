@@ -12,9 +12,6 @@ export function withUser<P extends Record<string, any> = {}>(
   return async (context: GetServerSidePropsContext) => {
     const result = fn ? await fn(context) : { props: {} as P };
 
-    console.log("Headers:", context.req.headers);
-    console.log("Cookies:", context.req.headers.cookie);
-
     try {
       const session = await auth0.getSession(context.req);
 
