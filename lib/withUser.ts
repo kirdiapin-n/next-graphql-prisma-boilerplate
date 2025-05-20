@@ -12,25 +12,39 @@ export function withUser<P extends Record<string, any> = {}>(
   return async (context: GetServerSidePropsContext) => {
     const result = fn ? await fn(context) : { props: {} as P };
 
-    const session = await auth0.getSession(context.req);
+    console.log("Headers:", context.req.headers);
+    console.log("Cookies:", context.req.headers.cookie);
 
-    if (!session) {
-      console.error("No session found.");
+    try {
+      const session = await auth0.getSession(context.req);
 
-      return { props: { ...result.props, user: null } };
+      if (!session) {
+        console.error("No session found.");
+
+        return { props: { ...result.props, user: null } };
+      }
+
+      const client = getClient();
+      const { data } = await client.query<IGetUserQuery, IGetUserQueryVariables>({
+        query: GET_USER,
+        variables: { auth0Id: session?.user.sub },
+      });
+
+      return {
+        props: {
+          ...result.props,
+          user: data.user,
+        },
+      };
+    } catch (e) {
+      console.error("SESSION ERROR:", e);
+
+      return {
+        props: {
+          ...result.props,
+          user: null,
+        },
+      };
     }
-
-    const client = getClient();
-    const { data } = await client.query<IGetUserQuery, IGetUserQueryVariables>({
-      query: GET_USER,
-      variables: { auth0Id: session?.user.sub },
-    });
-
-    return {
-      props: {
-        ...result.props,
-        user: data.user,
-      },
-    };
   };
 }
