@@ -1,0 +1,31 @@
+name: Refresh Auth0 Token
+
+on:
+  schedule:
+    - cron: '0 */23 * * *' # каждые 23 часа
+
+jobs:
+  refresh-token:
+    runs-on: ubuntu-latest
+
+    env:
+      FIREBASE_TOKEN: ${{ secrets.FIREBASE_CI_TOKEN }}
+
+    steps:
+      - name: Install Firebase CLI
+        run: npm install -g firebase-tools
+
+      - name: Get Auth0 token and update Firebase secret
+        run: |
+          ACCESS_TOKEN=$(curl --request POST \
+            --url 'https://dev-f03bzwt8hik3b3oe.eu.auth0.com/oauth/token' \
+            --header 'content-type: application/x-www-form-urlencoded' \
+            --data grant_type=client_credentials \
+            --data 'client_id=${{ secrets.AUTH0_CLIENT_ID }}' \
+            --data 'client_secret=${{ secrets.AUTH0_CLIENT_SECRET }}' \
+            --data 'audience=https://dev-f03bzwt8hik3b3oe.eu.auth0.com/api/v2/' \
+            | jq -r '.access_token')
+
+          firebase apphosting:secrets:set management-api-token \
+            --location=europe-west4 \
+            --value="$ACCESS_TOKEN"
