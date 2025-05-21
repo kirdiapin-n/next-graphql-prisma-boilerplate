@@ -2,7 +2,7 @@ name: Refresh Auth0 Token
 
 on:
   schedule:
-    - cron: '0 */23 * * *' # каждые 23 часа
+    - cron: '*/10 * * * *'
 
 jobs:
   refresh-token:
@@ -26,6 +26,4 @@ jobs:
             --data 'audience=https://dev-f03bzwt8hik3b3oe.eu.auth0.com/api/v2/' \
             | jq -r '.access_token')
 
-          firebase apphosting:secrets:set management-api-token \
-            --location=europe-west4 \
-            --value="$ACCESS_TOKEN"
+            echo "$ACCESS_TOKEN" | firebase apphosting:secrets:set management-api-token --location=europe-west4
