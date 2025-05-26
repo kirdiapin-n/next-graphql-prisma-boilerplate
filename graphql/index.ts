@@ -6,11 +6,12 @@ const prisma = new PrismaClient().$extends(withAccelerate());
 
 interface Auth0UserResponse {
   message: string;
-  data: {
+  data?: {
     user_id: string;
     email: string;
     name: string;
   };
+  error?: string;
 }
 
 export const typeDefs = gql`
@@ -101,9 +102,13 @@ export const resolvers = {
         body: JSON.stringify({ email, password, name }),
       }).then((res): Promise<Auth0UserResponse> => res.json());
 
+      if (auth0User.error) throw new Error(auth0User.error);
+
+      if (!auth0User.data) return;
+
       return await prisma.user.create({
         data: {
-          auth0Id: auth0User.data.user_id,
+          auth0Id: auth0User.data?.user_id,
           name,
           email,
         },
