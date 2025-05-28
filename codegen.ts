@@ -13,9 +13,9 @@ const config: CodegenConfig = {
           enumValues: "keep",
         },
         declarationKind: "interface",
-        withHooks: true,
+        withHooks: false,
       },
-      plugins: ["typescript", "typescript-operations", "typescript-react-apollo"],
+      plugins: ["typescript", "typescript-operations"],
       hooks: {
         afterOneFileWrite: ["prettier --write"],
       },
