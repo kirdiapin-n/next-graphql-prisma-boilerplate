@@ -69,11 +69,17 @@ export interface IResult {
   success: Scalars["Boolean"]["output"];
 }
 
+export enum IRoles {
+  Admin = "Admin",
+  User = "User",
+}
+
 export interface IUser {
   auth0Id: Scalars["String"]["output"];
   email: Scalars["String"]["output"];
   id: Scalars["Int"]["output"];
   name: Scalars["String"]["output"];
+  roles: Array<IRoles>;
 }
 
 export type ICreatePostMutationVariables = Exact<{
@@ -123,7 +129,7 @@ export type IGetUserQueryVariables = Exact<{
   auth0Id: Scalars["String"]["input"];
 }>;
 
-export type IGetUserQuery = { user?: { name: string; email: string; id: number } | null };
+export type IGetUserQuery = { user?: { name: string; email: string; id: number; roles: Array<IRoles> } | null };
 
 export const CreatePostDocument = gql`
   mutation CreatePost($title: String!, $content: String!) {
@@ -432,6 +438,7 @@ export const GetUserDocument = gql`
       name
       email
       id
+      roles
     }
   }
 `;

@@ -1,3 +1,4 @@
+import { IRoles } from "@/graphql/types";
 import { PrismaClient } from "@prisma/client";
 import { withAccelerate } from "@prisma/extension-accelerate";
 import { gql } from "graphql-tag";
@@ -15,6 +16,11 @@ interface Auth0UserResponse {
 }
 
 export const typeDefs = gql`
+  enum Roles {
+    Admin
+    User
+  }
+
   type Post {
     id: Int!
     title: String!
@@ -27,6 +33,7 @@ export const typeDefs = gql`
     name: String!
     auth0Id: String!
     email: String!
+    roles: [Roles!]!
   }
 
   type Result {
@@ -111,6 +118,7 @@ export const resolvers = {
           auth0Id: auth0User.data?.user_id,
           name,
           email,
+          roles: [IRoles.User],
         },
       });
     },
