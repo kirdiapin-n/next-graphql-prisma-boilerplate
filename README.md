@@ -33,7 +33,7 @@ This command creates the following:
 
 ### 2. Configure the Database URL
 
-Edit your .env file and set the <b>DATABASE_URL</b> to point to your local database. Example:
+Edit your .env file and set the <b>DATABASE_URL</b> to point to your local database, example:
 
 ```DATABASE_URL="postgresql://postgres:postgres@localhost:5435/postgres"```
 
