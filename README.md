@@ -7,31 +7,16 @@
 ## 🧭 Table of Contents
 
 - [📦 Setup Instructions](#-setup-instructions)
-    - [1. Initialize Prisma](#1-initialize-prisma)
-    - [2. Configure the Database URL](#2-configure-the-database-url)
-    - [3. Run PostgreSQL with Docker](#3-run-postgresql-with-docker)
-    - [4. Run the First Migration](#4-run-the-first-migration)
+    - [1. Configure the Database URL](#1-configure-the-database-url)
+    - [2. Run PostgreSQL with Docker](#2-run-postgresql-with-docker)
+    - [3. Run the First Migration](#3-run-the-first-migration)
 - [✅ You're All Set](#-youre-all-set)
 
 ---
 
 ## 📦 Setup Instructions
 
-### 1. Initialize Prisma
-
-Initialize Prisma in your project:
-
-```bash
-npx prisma init
-```
-
-This command creates the following:
-<ul>
-    <li>prisma/schema.prisma – your Prisma schema</li>
-    <li>.env – where your database URL will go</li>
-</ul>
-
-### 2. Configure the Database URL
+### 1. Configure the Database URL
 
 Edit your .env file and set the <b>DATABASE_URL</b> to point to your local database, example:
 
@@ -39,7 +24,7 @@ Edit your .env file and set the <b>DATABASE_URL</b> to point to your local datab
 
 Make sure this matches the Docker setup below.
 
-### 3. Run PostgreSQL with Docker
+### 2. Run PostgreSQL with Docker
 
 If you don’t have PostgreSQL installed, spin up a container using Docker:
 
@@ -52,7 +37,7 @@ docker run --name postgres-local \
 
 This starts a PostgreSQL instance accessible at localhost:5435.
 
-### 4. Run the First Migration
+### 3. Run the First Migration
 
 With your database running and .env configured, apply the initial migration:
 
