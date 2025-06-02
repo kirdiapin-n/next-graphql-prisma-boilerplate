@@ -59,7 +59,7 @@ export interface IQuerySearchPostsArgs {
 }
 
 export interface IQueryUserArgs {
-  auth0Id: Scalars["String"]["input"];
+  email: Scalars["String"]["input"];
 }
 
 export interface IResult {
@@ -72,7 +72,6 @@ export enum IRoles {
 }
 
 export interface IUser {
-  auth0Id: Scalars["String"]["output"];
   email: Scalars["String"]["output"];
   id: Scalars["Int"]["output"];
   name: Scalars["String"]["output"];
@@ -98,7 +97,7 @@ export type ICreateUserMutationVariables = Exact<{
   password: Scalars["String"]["input"];
 }>;
 
-export type ICreateUserMutation = { createUser: { id: number; auth0Id: string; name: string; email: string } };
+export type ICreateUserMutation = { createUser: { id: number; name: string; email: string } };
 
 export type IGetPostsQueryVariables = Exact<{ [key: string]: never }>;
 
@@ -123,7 +122,7 @@ export type ISearchPostsQuery = {
 };
 
 export type IGetUserQueryVariables = Exact<{
-  auth0Id: Scalars["String"]["input"];
+  email: Scalars["String"]["input"];
 }>;
 
 export type IGetUserQuery = { user?: { name: string; email: string; id: number; roles: Array<IRoles> } | null };

@@ -21,10 +21,16 @@ export function withUser<P extends Record<string, any> = {}>(
         return { props: { ...result.props, user: null } };
       }
 
+      if (!session.user.email) {
+        console.error("User not found.");
+
+        return { props: { ...result.props, user: null } };
+      }
+
       const client = getClient();
       const { data } = await client.query<IGetUserQuery, IGetUserQueryVariables>({
         query: GET_USER,
-        variables: { auth0Id: session?.user.sub },
+        variables: { email: session.user.email },
       });
 
       return {
