@@ -10,6 +10,7 @@ import { getClient } from "@/lib/ssrApolloClient";
 import { useMutation } from "@apollo/client";
 import { Button, Card, CardActions, CardContent, Typography } from "@mui/material";
 import { GetServerSideProps } from "next";
+import Head from "next/head";
 import { useRouter } from "next/router";
 import React from "react";
 
@@ -26,7 +27,11 @@ export default function Post({ post }: IGetPostQuery) {
   if (!post) return null;
 
   return (
-    <div>
+    <>
+      <Head>
+        <title>{post.title} | MyApp</title>
+        <meta name="description" content={`${post.title} post`} />
+      </Head>
       <Card>
         <CardContent>
           <Typography variant="h5" component="div">
@@ -45,7 +50,7 @@ export default function Post({ post }: IGetPostQuery) {
           </Button>
         </CardActions>
       </Card>
-    </div>
+    </>
   );
 }
 

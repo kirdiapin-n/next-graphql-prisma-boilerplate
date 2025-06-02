@@ -1,11 +1,16 @@
 import { IGetUserQuery } from "@/graphql/types";
 import { withPageAuthRequired } from "@/lib/withPageAuthRequired";
 import { withUser } from "@/lib/withUser";
+import Head from "next/head";
 import React from "react";
 
 export default function Profile({ user }: IGetUserQuery) {
   return (
     <>
+      <Head>
+        <title>Profile | MyApp</title>
+        <meta name="description" content={"Profile info page"} />
+      </Head>
       {user && (
         <div style={{ textAlign: "center" }}>
           <h2>{user.name}</h2>

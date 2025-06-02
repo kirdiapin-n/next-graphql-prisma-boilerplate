@@ -5,12 +5,17 @@ import { getClient } from "@/lib/ssrApolloClient";
 import { WithUser, withUser } from "@/lib/withUser";
 import AddIcon from "@mui/icons-material/Add";
 import { IconButton, Stack } from "@mui/material";
+import Head from "next/head";
 import Link from "next/link";
 import React from "react";
 
 function Home({ posts, user }: WithUser<IGetPostsQuery>) {
   return (
-    <div>
+    <>
+      <Head>
+        <title>Home | MyApp</title>
+        <meta name="description" content="Home page with posts" />
+      </Head>
       <Stack direction="row" justifyContent="space-between" alignItems="center">
         <h1>Blog Posts</h1>
 
@@ -24,7 +29,7 @@ function Home({ posts, user }: WithUser<IGetPostsQuery>) {
       </Stack>
 
       <List posts={posts} />
-    </div>
+    </>
   );
 }
 
