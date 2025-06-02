@@ -31,7 +31,6 @@ export const typeDefs = gql`
   type User {
     id: Int!
     name: String!
-    auth0Id: String!
     email: String!
     roles: [Roles!]!
   }
@@ -45,7 +44,7 @@ export const typeDefs = gql`
     post(id: Int!): Post!
     searchPosts(term: String!): [Post!]!
     users: [User!]!
-    user(auth0Id: String!): User
+    user(email: String!): User
   }
 
   type Mutation {
@@ -82,8 +81,8 @@ export const resolvers = {
     users: async () => {
       return prisma.user.findMany();
     },
-    user: async (_: any, { auth0Id }: { auth0Id: string }) => {
-      return prisma.user.findUnique({ where: { auth0Id } });
+    user: async (_: any, { email }: { email: string }) => {
+      return prisma.user.findUnique({ where: { email } });
     },
   },
   Mutation: {
@@ -113,9 +112,8 @@ export const resolvers = {
 
       if (!auth0User.data) return;
 
-      return await prisma.user.create({
+      return prisma.user.create({
         data: {
-          auth0Id: auth0User.data?.user_id,
           name,
           email,
           roles: [IRoles.User],
