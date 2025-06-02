@@ -15,7 +15,7 @@ export default function Header() {
   const handleClose = () => setAnchorEl(null);
 
   return (
-    <AppBar position="static" color="primary">
+    <AppBar position="sticky" sx={{ top: 0 }} color="primary">
       <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
         {/* Left - Home */}
         <Box>
@@ -28,7 +28,7 @@ export default function Header() {
         <Box>
           {user ? (
             <>
-              <IconButton size="large" color="inherit" onClick={handleMenu}>
+              <IconButton aria-label="Profile Button" size="large" color="inherit" onClick={handleMenu}>
                 <AccountCircle />
               </IconButton>
               <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleClose}>

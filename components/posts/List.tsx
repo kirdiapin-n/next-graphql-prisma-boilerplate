@@ -31,7 +31,7 @@ export const List = ({ posts: initialPosts }: IGetPostsQuery) => {
         />
       </Box>
 
-      <Stack spacing={2} direction="row">
+      <Stack spacing={2} direction="row" flexWrap="wrap">
         {posts.map(({ id, ...post }) => (
           <Card key={id}>
             <CardContent>
