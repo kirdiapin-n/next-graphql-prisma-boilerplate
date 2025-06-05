@@ -1,9 +1,9 @@
-html, body, body > div {
+html, body, #app {
     height: 100%;
     margin: 0;
 }
 
-body > div {
+#app {
     display: flex;
     flex-direction: column;
 }

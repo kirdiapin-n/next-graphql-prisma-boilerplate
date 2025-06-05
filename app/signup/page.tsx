@@ -1,3 +1,5 @@
+"use client";
+
 import { CREATE_USER } from "@/graphql/mutations/users";
 import { ICreateUserMutation, ICreateUserMutationVariables } from "@/graphql/types";
 import { useMutation } from "@apollo/client";

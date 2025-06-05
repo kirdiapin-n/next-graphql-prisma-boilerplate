@@ -1,12 +1,17 @@
+"use client";
+
 import { MIN_LENGTH_TO_SEARCH } from "@/constants/ui";
+import { useUser } from "@/context/UserContext";
 import { SEARCH_POSTS } from "@/graphql/queries/posts";
 import { IGetPostsQuery, ISearchPostsQuery, ISearchPostsQueryVariables } from "@/graphql/types";
 import { useQuery } from "@apollo/client";
-import { Box, Button, Card, CardActions, CardContent, Stack, TextField, Typography } from "@mui/material";
+import AddIcon from "@mui/icons-material/Add";
+import { Button, Card, CardActions, CardContent, IconButton, Stack, TextField, Typography } from "@mui/material";
 import Link from "next/link";
 import React, { useState } from "react";
 
 export const List = ({ posts: initialPosts }: IGetPostsQuery) => {
+  const { user } = useUser();
   const [searchTerm, setSearchTerm] = useState("");
 
   const skip = searchTerm?.length <= MIN_LENGTH_TO_SEARCH;
@@ -20,7 +25,7 @@ export const List = ({ posts: initialPosts }: IGetPostsQuery) => {
 
   return (
     <React.Fragment>
-      <Box sx={{ mb: 4 }}>
+      <Stack sx={{ mb: 4 }} spacing={2} direction="row" alignItems="center">
         <TextField
           label="Search Posts"
           value={searchTerm}
@@ -29,7 +34,12 @@ export const List = ({ posts: initialPosts }: IGetPostsQuery) => {
           margin="normal"
           placeholder="Search by title or content..."
         />
-      </Box>
+        {user && (
+          <IconButton href="/posts/add" LinkComponent={Link} title="Add Post">
+            <AddIcon />
+          </IconButton>
+        )}
+      </Stack>
 
       <Stack gap={2} direction="row" flexWrap="wrap">
         {posts.map(({ id, ...post }) => (
@@ -47,7 +57,7 @@ export const List = ({ posts: initialPosts }: IGetPostsQuery) => {
             </CardContent>
 
             <CardActions>
-              <Button LinkComponent={Link} href={{ pathname: "/posts/[id]", query: { id } } as any} size="small">
+              <Button LinkComponent={Link} href={`posts/${id}`} size="small">
                 Learn More
               </Button>
             </CardActions>

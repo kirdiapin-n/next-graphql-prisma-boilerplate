@@ -1,15 +1,12 @@
-import { NextApiRequest, NextApiResponse } from "next";
 import { getManagementApiToken } from "@/lib/auth0TokenManager";
+import { NextResponse } from "next/server";
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method !== "POST") {
-    return res.status(405).json({ error: "Method Not Allowed" });
-  }
-
+export async function POST(req: Request) {
   try {
-    const token = await getManagementApiToken();
+    const body = await req.json();
+    const { email, password, name } = body;
 
-    const { email, password, name } = req.body;
+    const token = await getManagementApiToken();
 
     const response = await fetch(`https://${process.env.AUTH0_DOMAIN}/api/v2/users`, {
       method: "POST",
@@ -31,12 +28,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (!response.ok) {
       const errorMsg = data.message || "Failed to create user";
       console.error("Auth0 error:", errorMsg);
-      return res.status(500).json({ error: errorMsg });
+      return NextResponse.json({ error: errorMsg }, { status: 500 });
     }
 
-    return res.status(201).json({ message: "User created", data });
+    return NextResponse.json({ message: "User created", data }, { status: 201 });
   } catch (error) {
     console.error("Error creating user:", error);
-    if (error instanceof Error) return res.status(500).json({ error: error.message });
+    const msg = error instanceof Error ? error.message : "Unknown error";
+    return NextResponse.json({ error: msg }, { status: 500 });
   }
 }

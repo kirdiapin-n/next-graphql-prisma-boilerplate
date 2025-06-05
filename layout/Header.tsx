@@ -1,4 +1,4 @@
-import { useUser } from "@auth0/nextjs-auth0";
+import { useUser } from "@/context/UserContext";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import { AppBar, Box, Button, IconButton, Menu, MenuItem, Toolbar } from "@mui/material";
 import Link from "next/link";
