@@ -1,18 +1,16 @@
 "use client";
 
 import { MIN_LENGTH_TO_SEARCH } from "@/constants/ui";
-import { useUser } from "@/context/UserContext";
 import { SEARCH_POSTS } from "@/graphql/queries/posts";
 import { IGetPostsQuery, ISearchPostsQuery, ISearchPostsQueryVariables } from "@/graphql/types";
+import { SearchParamsNameEnum, useSearchParamsState } from "@/hooks/useSearchParamsState";
 import { useQuery } from "@apollo/client";
-import AddIcon from "@mui/icons-material/Add";
-import { Button, Card, CardActions, CardContent, IconButton, Stack, TextField, Typography } from "@mui/material";
+import { Button, Card, CardActions, CardContent, Stack, Typography } from "@mui/material";
 import Link from "next/link";
-import React, { useState } from "react";
+import React from "react";
 
 export const List = ({ posts: initialPosts }: IGetPostsQuery) => {
-  const { user } = useUser();
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm] = useSearchParamsState(SearchParamsNameEnum.search);
 
   const skip = searchTerm?.length <= MIN_LENGTH_TO_SEARCH;
 
@@ -24,46 +22,28 @@ export const List = ({ posts: initialPosts }: IGetPostsQuery) => {
   const posts = !skip ? searchData?.searchPosts || [] : initialPosts;
 
   return (
-    <React.Fragment>
-      <Stack sx={{ mb: 4 }} spacing={2} direction="row" alignItems="center">
-        <TextField
-          label="Search Posts"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          fullWidth
-          margin="normal"
-          placeholder="Search by title or content..."
-        />
-        {user && (
-          <IconButton href="/posts/add" LinkComponent={Link} title="Add Post">
-            <AddIcon />
-          </IconButton>
-        )}
-      </Stack>
+    <Stack gap={2} direction="row" flexWrap="wrap">
+      {posts.map(({ id, ...post }) => (
+        <Card key={id}>
+          <CardContent>
+            <Typography variant="h5" component="div">
+              {post.title}
+            </Typography>
 
-      <Stack gap={2} direction="row" flexWrap="wrap">
-        {posts.map(({ id, ...post }) => (
-          <Card key={id}>
-            <CardContent>
-              <Typography variant="h5" component="div">
-                {post.title}
-              </Typography>
+            <Typography sx={{ color: "text.secondary", mb: 1.5 }}>
+              {new Date(Number(post.createdAt)).toLocaleDateString()}
+            </Typography>
 
-              <Typography sx={{ color: "text.secondary", mb: 1.5 }}>
-                {new Date(Number(post.createdAt)).toLocaleDateString()}
-              </Typography>
+            <Typography variant="body2">{post.content}</Typography>
+          </CardContent>
 
-              <Typography variant="body2">{post.content}</Typography>
-            </CardContent>
-
-            <CardActions>
-              <Button LinkComponent={Link} href={`posts/${id}`} size="small">
-                Learn More
-              </Button>
-            </CardActions>
-          </Card>
-        ))}
-      </Stack>
-    </React.Fragment>
+          <CardActions>
+            <Button LinkComponent={Link} href={`posts/${id}`} size="small">
+              Learn More
+            </Button>
+          </CardActions>
+        </Card>
+      ))}
+    </Stack>
   );
 };

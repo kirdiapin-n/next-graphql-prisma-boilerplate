@@ -1,7 +1,9 @@
 import { List } from "@/components/posts/List";
+import { SearchField } from "@/components/posts/SearchField";
 import { GET_POSTS } from "@/graphql/queries/posts";
 import { IGetPostsQuery } from "@/graphql/types";
 import { getClient } from "@/lib/ssrApolloClient";
+import { Stack } from "@mui/material";
 import React from "react";
 
 export const metadata = {
@@ -16,10 +18,12 @@ export default async function HomePage() {
   });
 
   return (
-    <>
+    <Stack spacing={4}>
       <h1>Blog Posts</h1>
 
+      <SearchField />
+
       <List posts={data.posts} />
-    </>
+    </Stack>
   );
 }
