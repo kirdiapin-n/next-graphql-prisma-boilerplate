@@ -1,3 +1,5 @@
+"use client";
+
 import { CREATE_POST } from "@/graphql/mutations/posts";
 import { GET_POSTS } from "@/graphql/queries/posts";
 import { ICreatePostMutation, IGetPostsQuery } from "@/graphql/types";
