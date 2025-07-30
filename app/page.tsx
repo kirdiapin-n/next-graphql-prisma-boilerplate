@@ -27,5 +27,3 @@ export default async function HomePage() {
     </Stack>
   );
 }
-
-export const dynamic = "force-dynamic";
